@@ -4,30 +4,30 @@ using namespace std;
 
 class Character
 {
-private:
-	char name[256];
-	int hp;
-	int mp;
-	int sp;
+private:                                    // 플레이어 정보(이름, 직업, 최대채력, 최대마나, 공격력, 사거리)
+	int hpmax;
+	int mpmax;
+	int atkback;
+	int range;
+	bool skillState = 0;                     // 버프발동 상태 확인변수
+public: 
+	char name[20];                                // 현재 정보(현재채력, 현재마나, 현재공격력, 방어력, 현재위치)
+	char job[20];
+	int hp;                                         
+	int mp; 
 	int atk;
 	int def;
-	int speed = 10;
-	int hpmax = hp;
-	int mpmax = mp;
-	int spmax = sp;
-	int atkback = atk;
-	int skillCount = 0;
-public:
+	int pos;
 	Character();
-	void charicterSet();
-	void viewCharacter();
-	void run();
-	void walk();
-	void attack(int _hp, int _def);
-	void atkBuffSkill();
-	void atkBack();
-	void rest();
-	void hpCheck();
+	void charicterSet();                  // 플레이어 설정(이름, 직업)
+	void status();                         // 플레이어 스테이터스
+	bool attack(int* _hp, int* _def);        // 공격함수
+	bool atkBuffSkill();                     // 공격버프스킬함수
+	void atkBack();                          // 버프스킬해제함수
+	void rest();                             // 휴식함수
+	bool hpCheck(int* _hp);                     // hp체크함수
+	bool turn(int* _hp, int* _def, bool* turnState1, bool* turnState2);   // 각 플레이어 턴의 행동함수
+	void interval();                                                         // 구분선
 	~Character();
 };
 
