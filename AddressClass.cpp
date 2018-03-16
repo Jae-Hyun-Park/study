@@ -40,10 +40,10 @@ void insertData() {
 	people[personNumber] = new Person;
 
 	cout << (personNumber + 1) << "'s people " << endl;
-	people[personNumber]->insertName;
-	people[personNumber]->insertPhone;
-	people[personNumber]->insertAge;
-	people[personNumber]->insertAddress;
+	people[personNumber]->insertName();
+	people[personNumber]->insertPhone();
+	people[personNumber]->insertAge();
+	people[personNumber]->insertAddress();
 	people[personNumber]->interval();
 	people[personNumber]->print();
 	people[personNumber]->interval();
@@ -71,7 +71,7 @@ void editData(int number) {
 		people[number - 1]->insertAge();
 		break;
 	case 4:
-		people[number - 1]->insertAddress;
+		people[number - 1]->insertAddress();
 		break;
 	default:
 		cout << "error!" << endl;
