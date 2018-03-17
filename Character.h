@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <string.h>
 using namespace std;
 
 class Character
@@ -17,17 +18,23 @@ public:
 	int mp; 
 	int atk;
 	int def;
-	int pos;
+	int loc;
+	
+
 	Character();
 	void charicterSet();                  // 플레이어 설정(이름, 직업)
 	void status();                         // 플레이어 스테이터스
+	void Warrior();
+	void Lancer();
+	bool run(int* _loc);
 	bool attack(int* _hp, int* _def);        // 공격함수
 	bool atkBuffSkill();                     // 공격버프스킬함수
 	void atkBack();                          // 버프스킬해제함수
 	void rest();                             // 휴식함수
 	bool hpCheck(int* _hp);                     // hp체크함수
-	bool turn(int* _hp, int* _def, bool* turnState1, bool* turnState2);   // 각 플레이어 턴의 행동함수
-	void interval();                                                         // 구분선
+	bool turn(int* _hp, int* _def, int* _loc, bool* turnState1, bool* turnState2);   // 각 플레이어 턴의 행동함수
+	void interval();                          // 구분선
+	void errorMessage();                       // 에러메세지 출력
 	~Character();
 };
 
