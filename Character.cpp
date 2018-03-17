@@ -1,7 +1,6 @@
 #include "Character.h"
 
-Character::Character()
-{
+Character::Character(){
 }
 void Character::interval() {     // 구분선
 	cout << "==============================================================" << endl;
@@ -10,8 +9,7 @@ void Character::errorMessage() { //에러메세지 출력
 	cout << "error! Please enter the correct Number!" << endl;
 	return;
 }
-void Character::charicterSet() // 캐릭터 셋팅
-{
+void Character::charicterSet() {   // 캐릭터 셋팅
 	int jobNumber = 0;
 	cout << "(word length < 20)name = ";
 	cin >> name;
@@ -81,7 +79,7 @@ void Character::atkBack() { // 버프제거함수
 void Character::status() { // 스테이터스
 	interval();
 	cout << "name = " << name << "\nJob = " << job << "\nhp = " << hp << " / " << hpmax 
-		<< "\nmp = " << mp << " / " << mpmax <<"\natk = " << atk << "\ndef = " << def << "\nloc = " << loc << endl;
+		<< "\nmp = " << mp << " / " << mpmax <<"\natk = " << atk << "\ndef = " << def << "\nlocx = " << locx << endl;
 	interval();
 	return;
 }
@@ -124,32 +122,32 @@ void Character::rest() { // 휴식
 	}
 	return;
 }
-bool Character::run(int* _loc) {  // 이동
+bool Character::run(int* _locx) {  // 이동
 	int goingNumber = 0;
 	cout << "Where will you go? (1. Right // 2. Left)" << endl;
 	cin >> goingNumber;
 	
 	switch (goingNumber) {
 	case 1:	
-		loc++; 
-		if (loc == *_loc) {                  // 위치 체킹 동일위치면 이동취소후 메뉴로
-			cout << "Same Location!" << endl;
-			loc--;
+		locx++; 
+		if (locx == *_locx) {                  // 위치 체킹 동일위치면 이동취소후 메뉴로
+			cout << "Same locxation!" << endl;
+			locx--;
 			return true;
 		}
-		cout << "The distance between Your and the Enemy = " << abs(loc - *_loc) << endl;
-		if (range >= abs(loc - *_loc))
+		cout << "The distance between Your and the Enemy = " << abs(locx - *_locx) << endl;
+		if (range >= abs(locx - *_locx))
 			cout << "Attack Possible!" << endl;
 		return false;
 	case 2:	
-		loc--;
-		if (loc == *_loc) {                  // 위치 체킹 동일위치면 이동취소후 메뉴로
-			cout << "Same Location!" << endl;
-			loc++;
+		locx--;
+		if (locx == *_locx) {                  // 위치 체킹 동일위치면 이동취소후 메뉴로
+			cout << "Same locxation!" << endl;
+			locx++;
 			return true;
 		}
-		cout << "The distance between Your and the Enemy = " << abs(loc - *_loc) << endl;
-		if (range >= abs(loc - *_loc))
+		cout << "The distance between Your and the Enemy = " << abs(locx - *_locx) << endl;
+		if (range >= abs(locx - *_locx))
 			cout << "Attack Possible!" << endl;
 		return false;
 	default:
@@ -157,17 +155,18 @@ bool Character::run(int* _loc) {  // 이동
 		return true;
 	}
 }
-bool Character::turn(int* _hp, int* _def, int* _loc, bool* turnState1, bool* turnState2) { // 플레이어 턴 (상대플레이어 hp, def, location, 각 플레이어의 턴 상태변수)
+bool Character::turn(int* _hp, int* _def, int* _locx, bool* turnState1, bool* turnState2, __int8 mapping[10][10]) { 
+	// 플레이어 턴 (상대플레이어 hp, def, locxation, 각 플레이어의 턴 상태변수, 매핑화 된맵)
 	int turnMenu = 0;
-	bool locationState = true;
+	bool locxationState = true;
 	bool gameState = true; // 게임의 진행 확인
 	interval();
-	cout << name << "'s Turn!\n1. attack // 2. skill // 3. rest // 4. run // 5. status" << endl;;
+	cout << name << "'s Turn!\n1. attack // 2. skill // 3. rest // 4. run // 5. status" << endl;
 	cin >> turnMenu;
 
 	switch (turnMenu) {
 	case 1:
-		if (abs(loc - *_loc) > range) {            // 사거리체크
+		if (abs(locx - *_locx) > range) {            // 사거리체크
 			cout << "Not enough Range" << endl;
 			*turnState1 = true;
 			*turnState2 = !(*turnState1);
@@ -184,7 +183,7 @@ bool Character::turn(int* _hp, int* _def, int* _loc, bool* turnState1, bool* tur
 		rest();
 		break;
 	case 4:		
-		*turnState1 = run(_loc);                // 이동 성공시 턴을 넘김
+		*turnState1 = run(_locx);                // 이동 성공시 턴을 넘김
 		*turnState2 = !(*turnState1);
 		return gameState;
 	case 5:
