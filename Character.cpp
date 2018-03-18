@@ -122,32 +122,82 @@ void Character::rest() { // 휴식
 	}
 	return;
 }
-bool Character::run(int* _locx) {  // 이동
+bool Character::run(int* _locx, int* _locy, Map* map) {  // 이동
 	int goingNumber = 0;
-	cout << "Where will you go? (1. Right // 2. Left)" << endl;
+	cout << "Where will you go? (1. Right // 2. Left // 3. Up  // 4. Down)" << endl;
 	cin >> goingNumber;
 	
 	switch (goingNumber) {
 	case 1:	
 		locx++; 
-		if (locx == *_locx) {                  // 위치 체킹 동일위치면 이동취소후 메뉴로
-			cout << "Same locxation!" << endl;
+		if (locx == *_locx && locy == *_locy) {                  // 위치 체킹 이동한 장소가 적과 동일위치면 이동취소후 메뉴로
+			cout << "Can not Move! (Same locxation!)" << endl;
 			locx--;
 			return true;
 		}
-		cout << "The distance between Your and the Enemy = " << abs(locx - *_locx) << endl;
-		if (range >= abs(locx - *_locx))
+		if (map->mapping[locy][locx] == 1) {                 // 위치 체킹 이동한 장소가 벽이면 이동취소후 메뉴로
+			cout << "Can not Move! (Wall)" << endl;
+			locx--;
+			return true;
+		}
+		cout << "The distance between Your and the Enemy(x + y) = " << (abs(locx - *_locx) + abs(locy - *_locy)) << endl;
+		map->playerLocChecking(locx, locy, *_locx, *_locy);
+		map->buildMapping();
+		if (range >= (abs(locx - *_locx) + abs(locy - *_locy)))
 			cout << "Attack Possible!" << endl;
 		return false;
 	case 2:	
 		locx--;
-		if (locx == *_locx) {                  // 위치 체킹 동일위치면 이동취소후 메뉴로
-			cout << "Same locxation!" << endl;
+		if (locx == *_locx && locy == *_locy) {                  // 위치 체킹 이동한 장소가 적과 동일위치면 이동취소후 메뉴로
+			cout << "Can not Move! (Same locxation!)" << endl;
 			locx++;
 			return true;
 		}
-		cout << "The distance between Your and the Enemy = " << abs(locx - *_locx) << endl;
-		if (range >= abs(locx - *_locx))
+		if (map->mapping[locy][locx] == 1) {                     // 위치 체킹 이동한 장소가 벽이면 이동취소후 메뉴로
+			cout << "Can not Move! (Wall)" << endl;
+			locx++;
+			return true;
+		}
+		cout << "The distance between Your and the Enemy(x + y) = " << (abs(locx - *_locx) + abs(locy - *_locy)) << endl;
+		map->playerLocChecking(locx, locy, *_locx, *_locy);
+		map->buildMapping();
+		if (range >= (abs(locx - *_locx) + abs(locy - *_locy)))
+			cout << "Attack Possible!" << endl;
+		return false;
+	case 3:
+		locy--;
+		if (locx == *_locx && locy == *_locy) {                  // 위치 체킹 이동한 장소가 적과 동일위치면 이동취소후 메뉴로
+			cout << "Can not Move! (Same locxation!)" << endl;
+			locy++;
+			return true;
+		}
+		if (map->mapping[locy][locx] == 1) {                      // 위치 체킹 이동한 장소가 벽이면 이동취소후 메뉴로
+			cout << "Can not Move! (Wall)" << endl;
+			locy++;
+			return true;
+		}
+		cout << "The distance between Your and the Enemy(x + y) = " << (abs(locx - *_locx) + abs(locy - *_locy)) << endl;
+		map->playerLocChecking(locx, locy, *_locx, *_locy);
+		map->buildMapping();
+		if (range >= (abs(locx - *_locx) + abs(locy - *_locy)))
+			cout << "Attack Possible!" << endl;
+		return false;
+	case 4:
+		locy++;
+		if (locx == *_locx && locy == *_locy) {                  // 위치 체킹 이동한 장소가 적과 동일위치면 이동취소후 메뉴로
+			cout << "Can not Move! (Same locxation!)" << endl;
+			locy--;
+			return true;
+		}
+		if (map->mapping[locy][locx] == 1) {                       // 위치 체킹 이동한 장소가 벽이면 이동취소후 메뉴로
+			cout << "Can not Move! (Wall)" << endl;
+			locy--;
+			return true;
+		}
+		cout << "The distance between Your and the Enemy(x + y) = " << (abs(locx - *_locx) + abs(locy - *_locy)) << endl;
+		map->playerLocChecking(locx, locy, *_locx, *_locy);
+		map->buildMapping();
+		if (range >= (abs(locx - *_locx) + abs(locy - *_locy)))
 			cout << "Attack Possible!" << endl;
 		return false;
 	default:
@@ -155,13 +205,14 @@ bool Character::run(int* _locx) {  // 이동
 		return true;
 	}
 }
-bool Character::turn(int* _hp, int* _def, int* _locx, bool* turnState1, bool* turnState2, __int8 mapping[10][10]) { 
-	// 플레이어 턴 (상대플레이어 hp, def, locxation, 각 플레이어의 턴 상태변수, 매핑화 된맵)
+bool Character::turn(int* _hp, int* _def, int* _locx, int* _locy, bool* turnState1, bool* turnState2, Map* map) { 
+	// 플레이어 턴 (상대플레이어 hp, def, location, 각 플레이어의 턴 상태변수, 맵)
 	int turnMenu = 0;
 	bool locxationState = true;
 	bool gameState = true; // 게임의 진행 확인
 	interval();
-	cout << name << "'s Turn!\n1. attack // 2. skill // 3. rest // 4. run // 5. status" << endl;
+	cout << name << "'s Turn!" << endl;
+	cout << "1. attack // 2. skill // 3. rest // 4. run // 5. status // 6. View Map" << endl;
 	cin >> turnMenu;
 
 	switch (turnMenu) {
@@ -183,13 +234,19 @@ bool Character::turn(int* _hp, int* _def, int* _locx, bool* turnState1, bool* tu
 		rest();
 		break;
 	case 4:		
-		*turnState1 = run(_locx);                // 이동 성공시 턴을 넘김
+		*turnState1 = run(_locx, _locy, map);                // 이동 성공시 턴을 넘김
 		*turnState2 = !(*turnState1);
 		return gameState;
 	case 5:
 		status();
 		*turnState1 = true;                         // 스테이터스 확인 (턴을 넘기지 않음)
 		*turnState2 = !(*turnState1);
+		return gameState;
+	case 6:
+		map->playerLocChecking(locx,locy,*_locx, *_locy);
+		map->ViewMap();
+		*turnState1 = true;                         // 맵 확인 (턴을 넘기지 않음)
+		*turnState2 = !(*turnState1);              
 		return gameState;
 	default:
 		errorMessage();
