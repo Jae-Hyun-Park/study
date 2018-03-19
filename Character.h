@@ -12,17 +12,18 @@ private:                                    // 플레이어 정보(이름, 직업, 최대채�
 	int range;
 	bool skillState = 0;                     // 버프발동 상태 확인변수
 
-public: 
+public:
 	char* name;                                // 현재 정보(현재채력, 현재마나, 현재공격력, 방어력, 현재위치)
 	char* job;
-	int hp;                                         
-	int mp; 
+	int hp;
+	int mp;
 	int atk;
 	int def;
 	int locx;
 	int locy;
-	
+
 	Character();                              // 플레이어 설정(이름, 직업)
+	Character(const Character &player);         // 플레이어 2 설정 (동일이름, 다른직업)
 	void status();                         // 플레이어 스테이터스
 	void Warrior(const char* jobname);
 	void Lancer(const char* jobname);

@@ -12,7 +12,7 @@ void GameWindow::location(Character* player, Character* player2) {
 }
 
 void GameWindow::gameSet(Character* player, Character* player2) {         // 게임세팅
-	cout << player->name << "("<< player->job << ")"<< " vs " << player2->name << "(" << player2->job << ")" << endl;
+	cout << player->name << "(" << player->job << ")" << " vs " << player2->name << "(" << player2->job << ")" << endl;
 	cout << "\nBattle Start !!" << endl;
 	return;
 }
@@ -31,7 +31,8 @@ void GameWindow::gameRestart() {
 
 void GameWindow::gameStart(Map* map) { // 게임진행
 	Character* player = new Character();
-	Character* player2 = new Character();
+//	Character* player2 = new Character();
+	Character* player2 = new Character(*player);
 	location(player, player2);
 	gameSet(player, player2);
 	while (playstate == true) {
@@ -41,7 +42,7 @@ void GameWindow::gameStart(Map* map) { // 게임진행
 		while (turnstate2 == true && playstate == true)
 			playstate = player2->turn(&player->hp, &player->def, &player->locx, &player->locy,
 				&turnstate2, &turnstate1, map);
-	}	
+	}
 	if (playstate == false)
 		return;
 }
@@ -54,4 +55,5 @@ GameWindow::GameWindow()
 
 GameWindow::~GameWindow()
 {
+	delete(map);
 }

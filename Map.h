@@ -4,7 +4,7 @@
 using namespace std;
 const int mapSize = 10;
 class Map {
-private:                    
+private:
 	char maps[10][21];       // View용 맵 배열
 	char* pMap = maps[0];
 	char* wall = "■";                 // 맵 리소스 (벽, 길, 각플레이어)

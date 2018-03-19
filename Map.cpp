@@ -8,19 +8,31 @@ void Map::buildMapping() {  // ∏  √ ±‚»≠
 		for (int j = 0; j < 10; j++) {
 			switch (mapping[i][j]) {
 			case 1:
-				strcat(maps, wall);
+				strcpy(pMap, wall);
+				pMap += 2;
+				if (pMap == &maps[i][20])
+					pMap++;
 				break;
-			
+
 			case 0:
-				strcat(maps, road);
+				strcpy(pMap, road);
+				pMap += 2;
+				if (pMap == &maps[i][20])
+					pMap++;
 				break;
 
 			case 3:
-				strcat(maps, player1);
+				strcpy(pMap, player1);
+				pMap += 2;
+				if (pMap == &maps[i][20])
+					pMap++;
 				break;
 
 			case 4:
-				strcat(maps, player2);
+				strcpy(pMap, player2);
+				pMap += 2;
+				if (pMap == &maps[i][20])
+					pMap++;
 				break;
 
 			default:
@@ -29,6 +41,7 @@ void Map::buildMapping() {  // ∏  √ ±‚»≠
 		}
 		cout << maps[i] << endl;
 	}
+	pMap = maps[0];
 	return;
 }
 

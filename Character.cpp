@@ -32,9 +32,26 @@ Character::Character() {
 		}
 	}
 }
+Character::Character(const Character &player) {
+
+	name = new char[1];
+	name = player.name;
+	if(player.range == 1){
+			Lancer("Lancer");
+			interval();
+			status();
+			return;
+	}
+	else if (player.range == 2) {
+		Warrior("Warrior");
+		interval();
+		status();
+		return;
+	}
+}
 void Character::interval() {     // 구분선
 	cout << "==============================================================" << endl;
-} 
+}
 void Character::errorMessage() { //에러메세지 출력
 	cout << "error! Please enter the correct Number!" << endl;
 	return;
@@ -83,8 +100,8 @@ void Character::atkBack() { // 버프제거함수
 }
 void Character::status() { // 스테이터스
 	interval();
-	cout << "name = " << name << "\nJob = " << job << "\nhp = " << hp << " / " << hpmax 
-		<< "\nmp = " << mp << " / " << mpmax <<"\natk = " << atk << "\ndef = " << def 
+	cout << "name = " << name << "\nJob = " << job << "\nhp = " << hp << " / " << hpmax
+		<< "\nmp = " << mp << " / " << mpmax << "\natk = " << atk << "\ndef = " << def
 		<< "\nlocx = " << locx << ", locy = " << locy << endl;
 	interval();
 	return;
@@ -126,7 +143,7 @@ void Character::rest() { // 휴식
 		mp += 5;
 		if (mp > mpmax)
 			mp = mpmax;
-		cout << "Mp recovery " << hp << " / " << hpmax <<  endl;
+		cout << "Mp recovery " << hp << " / " << hpmax << endl;
 	}
 	return;
 }
@@ -134,10 +151,10 @@ bool Character::run(int* _locx, int* _locy, Map* map) {  // 이동
 	int goingNumber = 0;
 	cout << "Where will you go? (1. Right // 2. Left // 3. Up  // 4. Down)" << endl;
 	cin >> goingNumber;
-	
+
 	switch (goingNumber) {
-	case 1:	
-		locx++; 
+	case 1:
+		locx++;
 		if (locx == *_locx && locy == *_locy) {                  // 위치 체킹 이동한 장소가 적과 동일위치면 이동취소후 메뉴로
 			cout << "Can not Move! (Same locxation!)" << endl;
 			locx--;
@@ -154,7 +171,7 @@ bool Character::run(int* _locx, int* _locy, Map* map) {  // 이동
 		if (range >= (abs(locx - *_locx) + abs(locy - *_locy)))
 			cout << "Attack Possible!" << endl;
 		return false;
-	case 2:	
+	case 2:
 		locx--;
 		if (locx == *_locx && locy == *_locy) {                  // 위치 체킹 이동한 장소가 적과 동일위치면 이동취소후 메뉴로
 			cout << "Can not Move! (Same locxation!)" << endl;
@@ -213,7 +230,7 @@ bool Character::run(int* _locx, int* _locy, Map* map) {  // 이동
 		return true;
 	}
 }
-bool Character::turn(int* _hp, int* _def, int* _locx, int* _locy, bool* turnState1, bool* turnState2, Map* map) { 
+bool Character::turn(int* _hp, int* _def, int* _locx, int* _locy, bool* turnState1, bool* turnState2, Map* map) {
 	// 플레이어 턴 (상대플레이어 hp, def, location, 각 플레이어의 턴 상태변수, 맵)
 	int turnMenu = 0;
 	bool locxationState = true;
@@ -241,7 +258,7 @@ bool Character::turn(int* _hp, int* _def, int* _locx, int* _locy, bool* turnStat
 	case 3:
 		rest();
 		break;
-	case 4:		
+	case 4:
 		*turnState1 = run(_locx, _locy, map);                // 이동 성공시 턴을 넘김
 		*turnState2 = !(*turnState1);
 		return gameState;
@@ -251,10 +268,10 @@ bool Character::turn(int* _hp, int* _def, int* _locx, int* _locy, bool* turnStat
 		*turnState2 = !(*turnState1);
 		return gameState;
 	case 6:
-		map->playerLocChecking(locx,locy,*_locx, *_locy);
+		map->playerLocChecking(locx, locy, *_locx, *_locy);
 		map->ViewMap();
 		*turnState1 = true;                         // 맵 확인 (턴을 넘기지 않음)
-		*turnState2 = !(*turnState1);              
+		*turnState2 = !(*turnState1);
 		return gameState;
 	default:
 		errorMessage();
