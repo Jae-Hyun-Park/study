@@ -2,7 +2,7 @@
 #include <iostream>
 
 using namespace std;
-
+const int mapSize = 10;
 class Map {
 private:                    
 	char maps[10][21];       // View용 맵 배열
@@ -13,7 +13,7 @@ private:
 	char* player2 = "★";
 
 public:
-	__int8 mapping[10][10] = {                    // 매핑
+	__int8 mapping[mapSize][mapSize] = {                    // 매핑
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 		{ 1, 0, 1, 0, 0, 0, 0, 1, 0, 1 },
 		{ 1, 0, 1, 0, 0, 1, 0, 0, 0, 1 },

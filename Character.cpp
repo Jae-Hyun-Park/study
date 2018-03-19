@@ -1,31 +1,29 @@
 #include "Character.h"
 
-Character::Character(){
-}
-void Character::interval() {     // 구분선
-	cout << "==============================================================" << endl;
-} 
-void Character::errorMessage() { //에러메세지 출력
-	cout << "error! Please enter the correct Number!" << endl;
-	return;
-}
-void Character::charicterSet() {   // 캐릭터 셋팅
+Character::Character() {
 	int jobNumber = 0;
-	cout << "(word length < 20)name = ";
+	locx = 0;
+	locy = 0;
+
+	name = new char[1];
+
+	cout << "name = ";
 	cin >> name;
 	while (true) {
-	cout << "select Job (1. Warrior // 2. Lancer) ";
+		cout << "select Job (1. Warrior // 2. Lancer) ";
 
-	cin >> jobNumber;
+		cin >> jobNumber;
 		switch (jobNumber)
 		{
 		case 1:
-			Warrior();
+			Warrior("Warrior");
 			interval();
+			status();
 			return;
 		case 2:
-			Lancer();
+			Lancer("Lancer");
 			interval();
+			status();
 			return;
 		default:
 			errorMessage();
@@ -33,6 +31,13 @@ void Character::charicterSet() {   // 캐릭터 셋팅
 			break;
 		}
 	}
+}
+void Character::interval() {     // 구분선
+	cout << "==============================================================" << endl;
+} 
+void Character::errorMessage() { //에러메세지 출력
+	cout << "error! Please enter the correct Number!" << endl;
+	return;
 }
 bool Character::hpCheck(int* _hp) { // hp체크
 	if (*_hp <= 0) {
@@ -79,12 +84,14 @@ void Character::atkBack() { // 버프제거함수
 void Character::status() { // 스테이터스
 	interval();
 	cout << "name = " << name << "\nJob = " << job << "\nhp = " << hp << " / " << hpmax 
-		<< "\nmp = " << mp << " / " << mpmax <<"\natk = " << atk << "\ndef = " << def << "\nlocx = " << locx << endl;
+		<< "\nmp = " << mp << " / " << mpmax <<"\natk = " << atk << "\ndef = " << def 
+		<< "\nlocx = " << locx << ", locy = " << locy << endl;
 	interval();
 	return;
 }
-void Character::Warrior() {     // 전사
-	strcpy(job, "Warrior");
+void Character::Warrior(const char* jobname) {     // 전사
+	job = new char[strlen(jobname) + 1];
+	strcpy(job, jobname);
 	hpmax = 60;
 	hp = hpmax;
 	mpmax = 30;
@@ -95,9 +102,10 @@ void Character::Warrior() {     // 전사
 	range = 1;
 	return;
 }
-void Character::Lancer() {   // 랜서
-	strcpy(job, "Lancer");
-	hpmax = 50;
+void Character::Lancer(const char* jobname) {   // 랜서
+	job = new char[strlen(jobname) + 1];
+	strcpy(job, jobname);
+	hpmax = 45;
 	hp = hpmax;
 	mpmax = 20;
 	mp = mpmax;
@@ -118,7 +126,7 @@ void Character::rest() { // 휴식
 		mp += 5;
 		if (mp > mpmax)
 			mp = mpmax;
-		cout << "Mp recovery " << hp << " / " << hpmax << endl;
+		cout << "Mp recovery " << hp << " / " << hpmax <<  endl;
 	}
 	return;
 }
@@ -260,4 +268,6 @@ bool Character::turn(int* _hp, int* _def, int* _locx, int* _locy, bool* turnStat
 }
 Character::~Character()
 {
+	delete (name);
+	delete (job);
 }

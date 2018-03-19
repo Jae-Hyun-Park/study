@@ -5,16 +5,16 @@ class GameWindow {
 private:
 	bool turnstate1 = true; // player1의 턴 상태변수
 	bool turnstate2 = false; // player2의 턴 상태변수
-	bool playstate = true; // 게임의 상태변수 false = Gmae End
-
-	void location();
-	void gameSet();
-	void gameRestart();
+	void location(Character* player, Character* player2);
+	void gameSet(Character* player, Character* player2);
+	void interval();
 
 public:
-	Character player, player2;
-	Map map;
-	void gameStart();
+	Map * map;
+	void gameRestart();
+	void gameStart(Map* map);
+	bool playstate = true; // 게임의 상태변수 false = Gmae End
+
 	GameWindow();
 	~GameWindow();
 };

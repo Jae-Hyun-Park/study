@@ -1,6 +1,10 @@
 #include "GameWindow.h"
 int main() {
-	GameWindow game;
-	game.gameStart();
-	return 0;
+	while (1) {
+		GameWindow game;
+		game.gameRestart();
+		delete (&game);
+		if (game.playstate == false)
+			return 0;
+	}
 }
