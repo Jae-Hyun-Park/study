@@ -2,3 +2,7 @@ Class 생성자
 Default 매개변수
 Class 소멸자
 thisPointer
+복사생성자
+
+복사생성자 명시적정의
+깊은복사로 모든데이터 복사(랜덤함수도 써보기)
