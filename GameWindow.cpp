@@ -4,14 +4,14 @@ void GameWindow::interval() {     // 구분선
 	cout << "==============================================================" << endl;
 }
 void GameWindow::location(Character* player, Character* player2, Character* monster1, Character* monster2) {
-	player->locx = 7;      // 초기 플레이어 위치설정
-	player->locy = 5;
+	player->locx = 4;      // 초기 플레이어, 몬스터 위치설정
+	player->locy = 1;
 	player2->locx = 8;
 	player2->locy = 5;
-	monster1->locx = 1;
-	monster1->locy = 5;
-	monster2->locx = 8;
-	monster2->locy = 4;
+	monster1->locx = 5;
+	monster1->locy = 1;
+	monster2->locx = 4;
+	monster2->locy = 8;
 	return;
 }
 void GameWindow::errorMessage() { //에러메세지 출력
@@ -70,12 +70,24 @@ void GameWindow::gameStart(Map* map) { // 게임진행
 		location(player[0], player[1], monster[0], monster[1]);
 		gameSet(player[0], player[1]);
 		while (playstate == true) {
-			while (turnstate1 == true)
-				playstate = player[0]->turn(&player[1]->hp, &player[1]->def, &player[1]->locx, &player[1]->locy,
-					&turnstate1, &turnstate2, map);
-			while (turnstate2 == true && playstate == true)
-				playstate = player[1]->turn(&player[0]->hp, &player[0]->def, &player[0]->locx, &player[0]->locy,
-					&turnstate2, &turnstate1, map);
+			while (turnstate1 == true) {
+			map->playerLocChecking(player[0]->locx, player[0]->locy, player[1]->locx, player[1]->locy,
+				monster[0]->locx, monster[0]->locy, monster[1]->locx, monster[1]->locy, monster[0]->hp, monster[1]->hp);
+			playstate = player[0]->turn(player[1], monster[0], monster[1], &turnstate1, &turnstate2, map);
+			}
+			while (turnstate2 == true && playstate == true) {
+				map->playerLocChecking(player[1]->locx, player[1]->locy, player[0]->locx, player[0]->locy,
+					monster[0]->locx, monster[0]->locy, monster[1]->locx, monster[1]->locy, monster[0]->hp, monster[1]->hp);
+				playstate = player[1]->turn(player[0], monster[0], monster[1], &turnstate2, &turnstate1, map);
+			}
+			if (playstate == false)
+				break;
+			map->playerLocChecking(player[0]->locx, player[0]->locy, player[1]->locx, player[1]->locy,
+				monster[0]->locx, monster[0]->locy, monster[1]->locx, monster[1]->locy, monster[0]->hp, monster[1]->hp);
+			monster[0]->turn(player[1], monster[0], monster[1], &turnstate1, &turnstate2, map);
+			map->playerLocChecking(player[0]->locx, player[0]->locy, player[1]->locx, player[1]->locy,
+				monster[0]->locx, monster[0]->locy, monster[1]->locx, monster[1]->locy, monster[0]->hp, monster[1]->hp);
+			monster[1]->turn(player[1], monster[0], monster[1], &turnstate1, &turnstate2, map);
 		}
 		gameRestart();
 		if (playstate == false)
@@ -93,9 +105,9 @@ GameWindow::~GameWindow()
 {
 	for (int i = 0; i < 2; i++) {
 		delete(player[i]);
-		delete(Monster[i]);
+		delete(monster[i]);
 		player[i] = NULL;
-		Monster[i] = NULL;
+		monster[i] = NULL;
 	}
 	delete(map);
 }

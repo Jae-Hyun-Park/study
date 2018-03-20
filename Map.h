@@ -1,6 +1,5 @@
 #pragma once
 #include <iostream>
-
 using namespace std;
 const int mapSize = 10;
 class Map {
@@ -29,7 +28,7 @@ public:
 
 	void buildMapping();         // 맵초기화함수
 	void ViewMap();              // 맵보기함수
-	void playerLocChecking(int _locx1, int _locy1, int _locx2, int _locy2);     // 플레이어 위치 체크
+	void playerLocChecking(int _locx1, int _locy1, int _locx2, int _locy2, int _locx3, int _locy3, int _locx4, int _locy4, int _mhp1, int _mhp2);     // 플레이어 위치 체크
 
 	Map();
 	~Map();

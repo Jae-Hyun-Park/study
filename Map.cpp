@@ -64,15 +64,21 @@ void Map::ViewMap() {   // 맵보기
 	return;
 }
 
-void Map::playerLocChecking(int _locx1, int _locy1, int _locx2, int _locy2) {          // 플레이어 위치체크
+void Map::playerLocChecking(int _plocx1, int _plocy1, int _plocx2, int _plocy2, int _mlocx1, int _mlocy1, int _mlocx2, int _mlocy2, int _mhp1, int _mhp2) {          // 플레이어 위치체크
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
 			if (mapping[i][j] == 2 || mapping[i][j] == 3)
 				mapping[i][j] = 0;
 		}
 	}
-	mapping[_locy1][_locx1] = 2;
-	mapping[_locy2][_locx2] = 3;
+	mapping[_plocy1][_plocx1] = 2;
+	mapping[_plocy2][_plocx2] = 3;
+	mapping[_mlocy1][_mlocx1] = 4;
+	mapping[_mlocy2][_mlocx2] = 5;
+	if (_mhp1 <= 0)
+		mapping[_mlocy1][_mlocx1] = 0;
+	if (_mhp2 <= 0)
+		mapping[_mlocy2][_mlocx2] = 0;
 }
 
 Map::~Map()
