@@ -10,7 +10,9 @@ private:
 	char* wall = "■";                 // 맵 리소스 (벽, 길, 각플레이어)
 	char* road = "□";
 	char* player1 = "♠";
-	char* player2 = "★";
+	char* player2 = "♣";
+	char* monster1 = "☆";
+	char* monster2 = "★";
 
 public:
 	__int8 mapping[mapSize][mapSize] = {                    // 매핑
