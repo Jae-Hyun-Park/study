@@ -3,7 +3,7 @@
 Map::Map() {
 }
 void Map::buildMapping() {  // ∏  √ ±‚»≠
-	cout << "°· = Wall, ¢º = You, °⁄ = EnemyPlayer, °Ÿ = Goblin, °⁄ = Oak" << endl;
+	cout << "°· = Wall, ¢º = " << "You" << ", °⁄ = " << "Enemy" << endl;
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
 			switch (mapping[i][j]) {
@@ -48,12 +48,7 @@ void Map::buildMapping() {  // ∏  √ ±‚»≠
 				if (pMap == &maps[i][20])
 					pMap++;
 				break;
-			case 6:
-				strcpy(pMap, item);
-				pMap += 2;
-				if (pMap == &maps[i][20])
-					pMap++;
-				break;
+
 			default:
 				break;
 			}

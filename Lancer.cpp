@@ -20,13 +20,7 @@ Lancer::Lancer(const char* jobname)
 }
 
 
-Lancer::~Lancer() {
-	if (name != NULL) {
-		delete[] name;
-		name = NULL;
-	}
-	if (job != NULL) {
-		delete[] job;
-		job = NULL;
-	}
+Lancer::~Lancer()
+{
+	delete(name);
 }

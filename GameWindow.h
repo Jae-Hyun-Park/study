@@ -3,7 +3,6 @@
 #include "Warrior.h"
 #include "Lancer.h"
 #include "Monster.h"
-#include "item.h"
 
 class GameWindow {
 private:
@@ -15,11 +14,9 @@ private:
 
 public:
 	Map * map;
-	Monster* monster[2];
+	Character* monster[2];
 	Character* player[2];
-	item* Item[2];
 
-	void itemSet();
 	void monsterSet();
 	void gameRestart();
 	void gameStart(Map* map);

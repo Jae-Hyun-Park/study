@@ -21,7 +21,6 @@ void GameWindow::errorMessage() { //에러메세지 출력
 void GameWindow::gameSet(Character* player, Character* player2) {         // 게임세팅
 	cout << player->name << "(" << player->job << ")" << " vs " << player2->name << "(" << player2->job << ")" << endl;
 	cout << "\nBattle Start !!" << endl;
-	Sleep(300);
 	return;
 }
 
@@ -37,15 +36,10 @@ void GameWindow::gameRestart() {
 		return;
 }
 void GameWindow::monsterSet() {
-	monster[0] = new Monster("Goblin", 5, 10, 15, 5, 1);
-	monster[1] = new Monster("Oak", 50, 20, 20, 10, 2);
+	monster[0] = new Monster("Goblin", 30, 0, 15, 5, 1);
+	monster[1] = new Monster("Oak", 50, 10, 20, 10, 2);
 }
 
-void GameWindow::itemSet() {
-	const bool monsterselect = monster[0]->GenerateRandom(0, 1);
-	Item[0] = new item("longSword", Sword, 10, 0, monster[monsterselect]->locx, monster[monsterselect]->locy);
-	Item[1] = new item("Iron armor", Armmor, 0, 10, monster[!monsterselect]->locx, monster[!monsterselect]->locy);
-}
 void GameWindow::gameStart(Map* map) { // 게임진행
 	while (true) {
 		int jobNumber = 0;
@@ -57,13 +51,11 @@ void GameWindow::gameStart(Map* map) { // 게임진행
 				player[i] = new Warrior("Warrior");
 				interval();
 				player[i]->status();
-				Sleep(300);
 				break;
 			case 2:
 				player[i] = new Lancer("Lancer");
 				interval();
 				player[i]->status();
-				Sleep(300);
 				break;
 			default:
 				errorMessage();
@@ -75,36 +67,27 @@ void GameWindow::gameStart(Map* map) { // 게임진행
 	//	Character* player2 = new Character();
 		//Character* player2 = new Character(*player);
 		monsterSet();
-		itemSet();
 		location(player[0], player[1], monster[0], monster[1]);
 		gameSet(player[0], player[1]);
 		while (playstate == true) {
 			while (turnstate1 == true) {
 			map->playerLocChecking(player[0]->locx, player[0]->locy, player[1]->locx, player[1]->locy,
 				monster[0]->locx, monster[0]->locy, monster[1]->locx, monster[1]->locy, monster[0]->hp, monster[1]->hp);
-			playstate = player[0]->turn(player[1], monster[0], monster[1], &turnstate1, &turnstate2, map, Item[0], Item[1]);
-			Sleep(1000);
+			playstate = player[0]->turn(player[1], monster[0], monster[1], &turnstate1, &turnstate2, map);
 			}
 			while (turnstate2 == true && playstate == true) {
 				map->playerLocChecking(player[1]->locx, player[1]->locy, player[0]->locx, player[0]->locy,
 					monster[0]->locx, monster[0]->locy, monster[1]->locx, monster[1]->locy, monster[0]->hp, monster[1]->hp);
-				playstate = player[1]->turn(player[0], monster[0], monster[1], &turnstate2, &turnstate1, map, Item[0], Item[1]);
-				Sleep(1000);
+				playstate = player[1]->turn(player[0], monster[0], monster[1], &turnstate2, &turnstate1, map);
 			}
 			if (playstate == false)
 				break;
-			if (monster[0]->hp > 0) {
-				map->playerLocChecking(player[0]->locx, player[0]->locy, player[1]->locx, player[1]->locy,
-					monster[0]->locx, monster[0]->locy, monster[1]->locx, monster[1]->locy, monster[0]->hp, monster[1]->hp);
-				monster[0]->monsterturn(player[0], player[1], map);
-				Sleep(1000);
-			}
-			if (monster[1]->hp > 0) {
-				map->playerLocChecking(player[0]->locx, player[0]->locy, player[1]->locx, player[1]->locy,
-					monster[0]->locx, monster[0]->locy, monster[1]->locx, monster[1]->locy, monster[0]->hp, monster[1]->hp);
-				monster[1]->monsterturn(player[0], player[1], map);
-				Sleep(1000);
-			}
+			map->playerLocChecking(player[0]->locx, player[0]->locy, player[1]->locx, player[1]->locy,
+				monster[0]->locx, monster[0]->locy, monster[1]->locx, monster[1]->locy, monster[0]->hp, monster[1]->hp);
+			monster[0]->turn(player[1], monster[0], monster[1], &turnstate1, &turnstate2, map);
+			map->playerLocChecking(player[0]->locx, player[0]->locy, player[1]->locx, player[1]->locy,
+				monster[0]->locx, monster[0]->locy, monster[1]->locx, monster[1]->locy, monster[0]->hp, monster[1]->hp);
+			monster[1]->turn(player[1], monster[0], monster[1], &turnstate1, &turnstate2, map);
 		}
 		gameRestart();
 		if (playstate == false)
