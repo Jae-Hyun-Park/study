@@ -12,6 +12,7 @@ private:
 	char* player2 = "¢À";
 	char* monster1 = "¡Ù";
 	char* monster2 = "¡Ú";
+	char* item = "¢¾";
 
 public:
 	__int8 mapping[mapSize][mapSize] = {                    // ¸ÅÇÎ

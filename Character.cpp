@@ -1,4 +1,5 @@
 #include "Character.h"
+
 Character::Character() {
 	locx = 0;
 	locy = 0;
@@ -20,6 +21,17 @@ Character::Character(const Character &player) {
 		return;
 	}*/
 }
+int Character::GenerateRandom(int min, int max) {
+	//< 1단계. 시드 설정
+	random_device rn;
+	mt19937_64 rnd(rn());
+
+	//< 2단계. 분포 설정 ( 정수 )
+	uniform_int_distribution<int> range(min, max);
+
+	//< 3단계. 값 추출
+	return range(rnd);
+}
 void Character::interval() {     // 구분선
 	cout << "==============================================================" << endl;
 }
@@ -27,19 +39,20 @@ void Character::errorMessage() { //에러메세지 출력
 	cout << "error! Please enter the correct Number!" << endl;
 	return;
 }
-bool Character::playerhpCheck(int _hp) { // 플레이어 hp체크
+bool Character::playerhpCheck(const char* _name, int _hp) { // 플레이어 hp체크
 	if (_hp <= 0) {
 		interval();
 		cout << name << " Win" << endl;
 		interval();
 		return false;
 	}
-	cout << "enemy's Hp = " << _hp << endl;
+	cout << _name << "'s Hp = " << _hp << endl;
 	return true;
 }
 bool Character::monsterhpCheck(Character* Monster) { // hp체크
 	if (Monster->hp <= 0) {
-		cout << Monster->name << "'s Dead" << endl;
+		cout << Monster->name << " is Die" << endl;
+		dropItem = true;
 		return true;
 	}
 	cout << Monster->name << "'s Hp = " << Monster->hp << "/" << Monster->hpmax<< endl;
@@ -177,6 +190,7 @@ bool Character::attack(Character* player2, Character* Monster1, Character* Monst
 			break;
 		}
 	}
+	Sleep(500);
 	cout << "No enemies in range" << endl;
 	*turnState1 = true;
 	*turnState2 = !(*turnState1);
@@ -188,10 +202,11 @@ bool Character::playerAttack(Character* player2) {
 		player2->hp -= (atk - player2->def);
 	else if (damage <= 0)            // 데미지가 0이하일경우 0으로처리
 		damage = 0;
+	Sleep(500);
 	cout << player2->name << " " << damage << "Damage!" << endl;
 	if (skillState == 1)   // 스킬발동 확인
 		atkBack();
-	return playerhpCheck(player2->hp);
+	return playerhpCheck(player2->name, player2->hp);
 }
 bool Character::monsterAttack(Character* Monster1) {
 	int damage = (atk - Monster1->def);
@@ -199,6 +214,7 @@ bool Character::monsterAttack(Character* Monster1) {
 		Monster1->hp -= (atk - Monster1->def);
 	else if (damage <= 0)            // 데미지가 0이하일경우 0으로처리
 		damage = 0;
+	Sleep(500);
 	cout << Monster1->name << " " << damage << "Damage!" << endl;
 	if (skillState == 1)   // 스킬발동 확인
 		atkBack();
@@ -247,17 +263,36 @@ void Character::rest() { // 휴식
 	}
 	return;
 }
-bool Character::run(Character* player2, Character* Monster1, Character* Monster2, Map* map) {  // 이동
+void Character::dropItemCheck(Map* map, Character* Monster) {
+	if (dropItem == true) 
+		map->mapping[Monster->locy][Monster->locx] = 6;
+	return;
+}
+bool Character::run(Character* player2, Character* Monster1, Character* Monster2, Map* map, item* Item1, item* Item2) {  // 이동
 	int goingNumber = 0;
 	cout << "Where will you go? (1. Right // 2. Left // 3. Up  // 4. Down)" << endl;
 	cin >> goingNumber;
 
 	switch (goingNumber) {
 	case 1:
+		if (map->mapping[locy][locx+speed] == 6) {
+			if (locy == Item1->locy && locy == Item1->locx) {
+				if (Item1->type == Sword)
+					EquipItem(WeaponSlot, Item1);
+				else if (Item1->type == Armmor)
+					EquipItem(ArmorSlot, Item1);
+			}
+			else if (locy == Item2->locy && locy == Item2->locx) {
+				if (Item2->type == Sword)
+					EquipItem(WeaponSlot, Item2);
+				else if (Item2->type == Armmor)
+					EquipItem(ArmorSlot, Item2);
+			}
+		}
 		locx += speed;
-		if ((locx == player2->locx && locy == player2->locy) || 
-			(locx == Monster1->locx && locy == Monster1->locy) ||
-			(locx == Monster2->locx && locy == Monster2->locy)) {                  // 위치 체킹 이동한 장소가 적과 동일위치면 이동취소후 메뉴로
+		if (map->mapping[locy][locx] == 3 ||
+			map->mapping[locy][locx] == 4 ||
+			map->mapping[locy][locx] == 5) {                  // 위치 체킹 이동한 장소가 적과 동일위치면 이동취소후 메뉴로
 			cout << "Can not Move! (Same location!)" << endl;
 			locx -= speed;
 			return true;
@@ -267,18 +302,37 @@ bool Character::run(Character* player2, Character* Monster1, Character* Monster2
 			return true;
 		}
 		cout << "The distance between Your and the Enemyplayer(x + y) = " << (abs(locx - player2->locx) + abs(locy - player2->locy)) << endl;
-		map->playerLocChecking(locx, locy, player2->locx, player2->locy , Monster1->locx, Monster1->locy, Monster2->locx, Monster2->locy, Monster1->hp, Monster2->hp);
+		map->playerLocChecking(locx, locy, player2->locx, player2->locy , Monster1->locx, Monster1->locy, 
+			Monster2->locx, Monster2->locy, Monster1->hp, Monster2->hp);
+		if(Monster1->hp <= 0)
+			dropItemCheck(map, Monster1);
+		else if(Monster2->hp <= 0)
+			dropItemCheck(map, Monster2);
 		map->buildMapping();
 		if (range >= (abs(locx - player2->locx) + abs(locy - player2->locy)) || 
-			range >= (abs(locx - Monster1->locx) + abs(locy - Monster1->locy)) || 
-			range >= (abs(locx - Monster2->locx) + abs(locy - Monster2->locy)))
+			(range >= (abs(locx - Monster1->locx) + abs(locy - Monster1->locy)) && Monster1->hp > 0) || 
+			(range >= (abs(locx - Monster2->locx) + abs(locy - Monster2->locy)) && Monster2->hp > 0))
 			cout << "Enemy Attack Possible!" << endl;
 		return false;
 	case 2:
+		if (map->mapping[locy][locx- speed] == 6) {
+			if (locy == Item1->locy && locy == Item1->locx) {
+				if (Item1->type == Sword)
+					EquipItem(WeaponSlot, Item1);
+				else if (Item1->type == Armmor)
+					EquipItem(ArmorSlot, Item1);
+			}
+			else if (locy == Item2->locy && locy == Item2->locx) {
+				if (Item2->type == Sword)
+					EquipItem(WeaponSlot, Item2);
+				else if (Item2->type == Armmor)
+					EquipItem(ArmorSlot, Item2);
+			}
+		}
 		locx -= speed;
-		if ((locx == player2->locx && locy == player2->locy) ||
-			(locx == Monster1->locx && locy == Monster1->locy) ||
-			(locx == Monster2->locx && locy == Monster2->locy)) {                  // 위치 체킹 이동한 장소가 적과 동일위치면 이동취소후 메뉴로
+		if (map->mapping[locy][locx] == 3 ||
+			map->mapping[locy][locx] == 4 ||
+			map->mapping[locy][locx] == 5) {                  // 위치 체킹 이동한 장소가 적과 동일위치면 이동취소후 메뉴로
 			cout << "Can not Move! (Same location!)" << endl;
 			locx += speed;
 			return true;
@@ -289,18 +343,37 @@ bool Character::run(Character* player2, Character* Monster1, Character* Monster2
 			return true;
 		}
 		cout << "The distance between Your and the Enemyplayer(x + y) = " << (abs(locx - player2->locx) + abs(locy - player2->locy)) << endl;
-		map->playerLocChecking(locx, locy, player2->locx, player2->locy, Monster1->locx, Monster1->locy, Monster2->locx, Monster2->locy, Monster1->hp, Monster2->hp);
+		map->playerLocChecking(locx, locy, player2->locx, player2->locy, Monster1->locx, Monster1->locy, 
+			Monster2->locx, Monster2->locy, Monster1->hp, Monster2->hp);
+		if (Monster1->hp <= 0)
+			dropItemCheck(map, Monster1);
+		else if (Monster2->hp <= 0)
+			dropItemCheck(map, Monster2);
 		map->buildMapping();
 		if (range >= (abs(locx - player2->locx) + abs(locy - player2->locy)) ||
-			range >= (abs(locx - Monster1->locx) + abs(locy - Monster1->locy)) ||
-			range >= (abs(locx - Monster2->locx) + abs(locy - Monster2->locy)))
+			(range >= (abs(locx - Monster1->locx) + abs(locy - Monster1->locy)) && Monster1->hp > 0) ||
+			(range >= (abs(locx - Monster2->locx) + abs(locy - Monster2->locy)) && Monster2->hp > 0))
 			cout << "Enemy Attack Possible!" << endl;
 		return false;
-	case 3:
+	case 3:		
+		if (map->mapping[locy - speed][locx] == 6) {
+			if (locy == Item1->locy && locy == Item1->locx) {
+				if (Item1->type == Sword)
+					EquipItem(WeaponSlot, Item1);
+				else if (Item1->type == Armmor)
+					EquipItem(ArmorSlot, Item1);
+			}
+			else if (locy == Item2->locy && locy == Item2->locx) {
+				if (Item2->type == Sword)
+					EquipItem(WeaponSlot, Item2);
+				else if (Item2->type == Armmor)
+					EquipItem(ArmorSlot, Item2);
+			}
+		}
 		locy -= speed;
-		if ((locx == player2->locx && locy == player2->locy) ||
-			(locx == Monster1->locx && locy == Monster1->locy) ||
-			(locx == Monster2->locx && locy == Monster2->locy)) {                  // 위치 체킹 이동한 장소가 적과 동일위치면 이동취소후 메뉴로
+		if (map->mapping[locy][locx] == 3 ||
+			map->mapping[locy][locx] == 4 ||
+			map->mapping[locy][locx] == 5) {                  // 위치 체킹 이동한 장소가 적과 동일위치면 이동취소후 메뉴로
 			cout << "Can not Move! (Same location!)" << endl;
 			locy += speed;
 			return true;
@@ -311,18 +384,38 @@ bool Character::run(Character* player2, Character* Monster1, Character* Monster2
 			return true;
 		}
 		cout << "The distance between Your and the Enemyplayer(x + y) = " << (abs(locx - player2->locx) + abs(locy - player2->locy)) << endl;
-		map->playerLocChecking(locx, locy, player2->locx, player2->locy, Monster1->locx, Monster1->locy, Monster2->locx, Monster2->locy, Monster1->hp, Monster2->hp);
+		map->playerLocChecking(locx, locy, player2->locx, player2->locy, Monster1->locx, Monster1->locy, 
+			Monster2->locx, Monster2->locy, Monster1->hp, Monster2->hp);
+		if (Monster1->hp <= 0)
+			dropItemCheck(map, Monster1);
+		else if (Monster2->hp <= 0)
+			dropItemCheck(map, Monster2);
 		map->buildMapping();
 		if (range >= (abs(locx - player2->locx) + abs(locy - player2->locy)) ||
-			range >= (abs(locx - Monster1->locx) + abs(locy - Monster1->locy)) ||
-			range >= (abs(locx - Monster2->locx) + abs(locy - Monster2->locy)))
+			(range >= (abs(locx - Monster1->locx) + abs(locy - Monster1->locy)) && Monster1->hp > 0) ||
+			(range >= (abs(locx - Monster2->locx) + abs(locy - Monster2->locy)) && Monster2->hp > 0))
 			cout << "Enemy Attack Possible!" << endl;
+		
 		return false;
 	case 4:
+		if (map->mapping[locy + speed][locx] == 6) {
+			if (locy == Item1->locy && locy == Item1->locx) {
+				if (Item1->type == Sword)
+					EquipItem(WeaponSlot, Item1);
+				else if (Item1->type == Armmor)
+					EquipItem(ArmorSlot, Item1);
+			}
+			else if (locy == Item2->locy && locy == Item2->locx) {
+				if (Item2->type == Sword)
+					EquipItem(WeaponSlot, Item2);
+				else if (Item2->type == Armmor)
+					EquipItem(ArmorSlot, Item2);
+			}
+		}
 		locy += speed;
-		if ((locx == player2->locx && locy == player2->locy) ||
-			(locx == Monster1->locx && locy == Monster1->locy) ||
-			(locx == Monster2->locx && locy == Monster2->locy)) {                  // 위치 체킹 이동한 장소가 적과 동일위치면 이동취소후 메뉴로
+		if (map->mapping[locy][locx] == 3 ||
+			map->mapping[locy][locx] == 4 ||
+			map->mapping[locy][locx] == 5) {                  // 위치 체킹 이동한 장소가 적과 동일위치면 이동취소후 메뉴로
 			cout << "Can not Move! (Same location!)" << endl;
 			locy -= speed;
 			return true;
@@ -333,11 +426,16 @@ bool Character::run(Character* player2, Character* Monster1, Character* Monster2
 			return true;
 		}
 		cout << "The distance between Your and the Enemyplayer(x + y) = " << (abs(locx - player2->locx) + abs(locy - player2->locy)) << endl;
-		map->playerLocChecking(locx, locy, player2->locx, player2->locy, Monster1->locx, Monster1->locy, Monster2->locx, Monster2->locy, Monster1->hp, Monster2->hp);
+		map->playerLocChecking(locx, locy, player2->locx, player2->locy, Monster1->locx, Monster1->locy, 
+			Monster2->locx, Monster2->locy, Monster1->hp, Monster2->hp);
+		if (Monster1->hp <= 0)
+			dropItemCheck(map, Monster1);
+		else if (Monster2->hp <= 0)
+			dropItemCheck(map, Monster2);
 		map->buildMapping();
 		if (range >= (abs(locx - player2->locx) + abs(locy - player2->locy)) ||
-			range >= (abs(locx - Monster1->locx) + abs(locy - Monster1->locy)) ||
-			range >= (abs(locx - Monster2->locx) + abs(locy - Monster2->locy)))
+			(range >= (abs(locx - Monster1->locx) + abs(locy - Monster1->locy)) && Monster1->hp > 0) ||
+			(range >= (abs(locx - Monster2->locx) + abs(locy - Monster2->locy)) && Monster2->hp > 0))
 			cout << "Enemy Attack Possible!" << endl;
 		return false;
 	default:
@@ -345,10 +443,9 @@ bool Character::run(Character* player2, Character* Monster1, Character* Monster2
 		return true;
 	}
 }
-bool Character::turn(Character* player2, Character* Monster1, Character* Monster2, bool* turnState1, bool* turnState2, Map* map) {
+bool Character::turn(Character* player2, Character* Monster1, Character* Monster2, bool* turnState1, bool* turnState2, Map* map, item* Item1, item* Item2) {
 	// 플레이어 턴 (상대플레이어 hp, def, location, 각 플레이어의 턴 상태변수, 맵)
 	int turnMenu = 0;
-	bool locxationState = true;
 	bool gameState = true; // 게임의 진행 확인
 	interval();
 	cout << name << "'s Turn!" << endl;
@@ -357,9 +454,11 @@ bool Character::turn(Character* player2, Character* Monster1, Character* Monster
 
 	switch (turnMenu) {
 	case 1:
+		Sleep(500);
 		gameState = attack(player2, Monster1, Monster2, map, turnState1, turnState2);
 		return gameState;
 	case 2:
+		Sleep(500);
 		*turnState1 = atkBuffSkill();            // 스킬 성공시 턴을 넘김
 		*turnState2 = !(*turnState1);
 		return gameState;
@@ -369,7 +468,8 @@ bool Character::turn(Character* player2, Character* Monster1, Character* Monster
 		*turnState2 = !(*turnState1);
 		return gameState;
 	case 4:
-		*turnState1 = run(player2, Monster1, Monster2, map);                // 이동 성공시 턴을 넘김
+		Sleep(500);
+		*turnState1 = run(player2, Monster1, Monster2, map, Item1, Item2);                // 이동 성공시 턴을 넘김
 		*turnState2 = !(*turnState1);
 		return gameState;
 	case 5:
@@ -378,7 +478,13 @@ bool Character::turn(Character* player2, Character* Monster1, Character* Monster
 		*turnState2 = !(*turnState1);
 		return gameState;
 	case 6:
-		map->playerLocChecking(locx, locy, player2->locx, player2->locy, Monster1->locx, Monster1->locy, Monster2->locx, Monster2->locy, Monster1->hp, Monster2->hp);
+		map->playerLocChecking(locx, locy, player2->locx, player2->locy, Monster1->locx, Monster1->locy, 
+			Monster2->locx, Monster2->locy, Monster1->hp, Monster2->hp);
+		if (Monster1->hp <= 0)
+			dropItemCheck(map, Monster1);
+		else if (Monster2->hp <= 0)
+			dropItemCheck(map, Monster2);
+
 		map->ViewMap();
 		*turnState1 = true;                         // 맵 확인 (턴을 넘기지 않음)
 		*turnState2 = !(*turnState1);
@@ -390,8 +496,26 @@ bool Character::turn(Character* player2, Character* Monster1, Character* Monster
 		return gameState;
 	}
 }
+void Character::EquipItem(EquipSlot slot, item* Item) {
+	cout << Item->name << "(" << Item->type << ")" << endl;
+	cout << "atk = " << Item->plusAtk << ", def = " << Item->plusDef << endl;
+	if (equipedItem[(int)slot] != NULL)
+	{
+		delete equipedItem[(int)slot];
+		equipedItem[(int)slot] = NULL;
+	}
+
+	equipedItem[(int)slot] = Item;
+	atk += Item->plusAtk;
+	def += Item->plusDef;
+	dropItem = false;
+	return;
+}
 Character::~Character()
 {
-	delete (name);
-
+	if (name != NULL)
+	{
+		delete[] name;
+		name = NULL;
+	}
 }
