@@ -1,0 +1,7 @@
+name : TextBattleTactics
+
+platform : c++
+
+genre : Turn Game, 1:1 Battle Tactics
+
+Uniqueness : Monster Kill -> random drop item
