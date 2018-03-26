@@ -261,7 +261,7 @@ void Character::rest() { // ÈÞ½Ä
 		mp += 5;
 		if (mp > mpmax)
 			mp = mpmax;
-		cout << "Mp recovery " << hp << " / " << hpmax << endl;
+		cout << "Mp recovery " << mp << " / " << mpmax << endl;
 	}
 	return;
 }
@@ -531,9 +531,8 @@ void Character::EquipItem(EquipSlot slot, item* Item) {
 }
 Character::~Character()
 {
-	if (name != NULL)
-	{
-		delete[] name;
+	if (name != NULL) {
 		name = NULL;
+		delete[] name;
 	}
 }

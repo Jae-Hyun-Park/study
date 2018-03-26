@@ -4,7 +4,7 @@ void GameWindow::interval() {     // 구분선
 	cout << "==============================================================" << endl;
 }
 void GameWindow::location(Character* player, Character* player2, Character* monster1, Character* monster2) {
-	player->locx = 1;      // 초기 플레이어, 몬스터 위치설정
+	player->locx = 7;      // 초기 플레이어, 몬스터 위치설정
 	player->locy = 5;
 	player2->locx = 8;
 	player2->locy = 5;
@@ -96,17 +96,23 @@ void GameWindow::gameStart(Map* map) { // 게임진행
 			if (monster[0]->hp > 0) {
 				map->playerLocChecking(player[0]->locx, player[0]->locy, player[1]->locx, player[1]->locy,
 					monster[0]->locx, monster[0]->locy, monster[1]->locx, monster[1]->locy, monster[0]->hp, monster[1]->hp);
-				monster[0]->monsterturn(player[0], player[1], map);
+				playstate = monster[0]->monsterturn(player[0], player[1], map);
 				Sleep(1000);
 			}
 			if (monster[1]->hp > 0) {
 				map->playerLocChecking(player[0]->locx, player[0]->locy, player[1]->locx, player[1]->locy,
 					monster[0]->locx, monster[0]->locy, monster[1]->locx, monster[1]->locy, monster[0]->hp, monster[1]->hp);
-				monster[1]->monsterturn(player[0], player[1], map);
+				playstate = monster[1]->monsterturn(player[0], player[1], map);
 				Sleep(1000);
 			}
 		}
 		gameRestart();
+		for (int i = 0; i < 2; i++) {
+			delete(player[i]);
+			delete(monster[i]);
+			player[i] = NULL;
+			monster[i] = NULL;
+		}
 		if (playstate == false)
 			return;
 	}

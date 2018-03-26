@@ -9,7 +9,7 @@ Warrior::Warrior(const char* jobname)
 	cin >> name;
 	job = new char[strlen(jobname) + 1];
 	strcpy(job, jobname);
-	hpmax = 60;
+	hpmax = 5;
 	hp = hpmax;
 	mpmax = 30;
 	mp = mpmax;
@@ -249,7 +249,7 @@ bool Warrior::turn(Character* player2, Character* Monster1, Character* Monster2,
 	bool gameState = true; // 게임의 진행 확인
 	interval();
 	cout << name << "'s Turn!" << endl;
-	cout << "1. attack // 2. attackskill 3, dashSkill // 4. rest // 5. run // 6. status // 7. View Map" << endl;
+	cout << "1. attack // 2. attackskill // 3, dashSkill // 4. rest // 5. run // 6. status // 7. View Map" << endl;
 	cin >> turnMenu;
 
 	switch (turnMenu) {
@@ -301,8 +301,8 @@ bool Warrior::turn(Character* player2, Character* Monster1, Character* Monster2,
 Warrior::~Warrior()
 {
 	if (name != NULL) {
-		delete[] name;
 		name = NULL;
+		delete[] name;
 	}
 	if (job != NULL) {
 		delete[] job;
