@@ -1,0 +1,10 @@
+함수
+함수포인터
+void 포인터
+캐스팅
+재귀함수
+문자열 추가 = char* strcat(char* dest, const char* src);
+문자열 삭제 = char* strncat(char* dest, const char* src, size_t n);
+call by value
+call by reference
+sizeof
