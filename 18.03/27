@@ -1,0 +1,12 @@
+SDL_image_library download
+https://www.libsdl.org/projects/SDL_image/ 
+-> Development Libraries: visual c++
+
+SDL_image_dll 추가
+빌드후 이벤트 -> 명령줄추가
+copy /Y .\lib\x64\SDL2.DLL $(SolutionDir)$(Configuration)\SDL2.DLL
+copy /Y .\lib\x64\SDL2_image.DLL $(SolutionDir)$(Configuration)\SDL2_image.DLL
+
+copy /Y .\lib\x86\SDL2.DLL $(SolutionDir)$(Configuration)\SDL2.DLL
+copy /Y .\lib\x86\SDL2_image.DLL $(SolutionDir)$(Configuration)\SDL2_image.DLL
+
