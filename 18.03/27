@@ -4,9 +4,19 @@ https://www.libsdl.org/projects/SDL_image/
 
 SDL_image_dll 추가
 빌드후 이벤트 -> 명령줄추가
+x64
 copy /Y .\lib\x64\SDL2.DLL $(SolutionDir)$(Configuration)\SDL2.DLL
 copy /Y .\lib\x64\SDL2_image.DLL $(SolutionDir)$(Configuration)\SDL2_image.DLL
+copy /Y .\lib\x64\zlib1.DLL $(SolutionDir)$(Configuration)\zlib1.DLL
+copy /Y .\lib\x64\libpng16-16.DLL $(SolutionDir)$(Configuration)\libpng16-16.DLL
 
+win 32
 copy /Y .\lib\x86\SDL2.DLL $(SolutionDir)$(Configuration)\SDL2.DLL
 copy /Y .\lib\x86\SDL2_image.DLL $(SolutionDir)$(Configuration)\SDL2_image.DLL
+copy /Y .\lib\x86\zlib1.DLL $(SolutionDir)$(Configuration)\zlib1.DLL
+copy /Y .\lib\x86\libpng16-16.DLL $(SolutionDir)$(Configuration)\libpng16-16.DLL
 
+SDL png texture 출력
+SDL Texture 클래스화
+SDL sprite 출력
+sprite 클래스화
