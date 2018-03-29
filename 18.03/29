@@ -5,3 +5,8 @@ SDL Font Setting
 http://www.libsdl.org/projects/SDL_ttf/ -> Development Libraries -> visual C++ download
 
 빌드 후 이벤트
+
+copy /Y .\lib\x64\SDL2_ttf.DLL $(SolutionDir)$(Configuration)\SDL2_ttf.DLL 추가입력
+* Image lib와 zlib.dll version이 다르므로 주의!(최신 버전으로 해야함)
+
+Font very hard
