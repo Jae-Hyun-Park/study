@@ -1,0 +1,19 @@
+SDL Mouse Event
+
+SDL 빌드후이벤트 명령줄
+win32
+copy /Y .\lib\x86\*.dll $(SolutionDir)$(Configuration)\*.dll
+x64
+copy /Y .\lib\x64\*.dll $(SolutionDir)$(Platform)\$(Configuration)\*.dll
+
+Component 패턴
+
+상호참조 처리방법
+(전방선언)
+1.헤더파일 제거
+2.class classname;
+3.참조위치 변경
+(cpp파일 에서 헤더파일을 참조)
+
+싱글턴 패턴
+
