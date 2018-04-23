@@ -1,5 +1,5 @@
 AI2
-Behavior Tree
+Behaviour tree
 
 Selector - 자식 노드중 하나라도 TRUE를 리턴하면 TRUE
 Sequence - 자식 노드 모두가 TRUE를 리턴하면 TRUE
