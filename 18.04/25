@@ -1,0 +1,32 @@
+DirectX 3D 9
+
+랜더링 파이프라인
+
+더블버퍼링
+
+버텍스 설정
+정점 쉐이더
+
+Local Space
+
+World Space
+AFFINE 변환 (이동, 회전, 스케일)
+안전한 순서 (스케일->회전->이동)
+
+Camera Space
+View Frustum
+
+Clip Space
+
+클리핑, 후면 제거 처리, 뷰포트 변환에 필요한 설정
+
+Rasterizaition
+프레그먼트 설정
+각 텍스쳐의 맞는 색 결정
+픽셀 쉐이더
+
+Z버퍼링
+깊이체크
+
+알파블렌딩
+순서중요
